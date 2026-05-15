@@ -1,0 +1,55 @@
+Language   Group   Files     Duration      Hours
+--------------------------------------------------
+Spanish    HC        627     00:53:17       0.89
+Spanish    PD        630     00:59:24       0.99
+German     HC        351     02:07:03       2.12
+German     PD        414     02:10:49       2.18
+Czech      HC        300     01:39:21       1.66
+Czech      PD        300     01:39:59       1.67
+--------------------------------------------------
+TOTAL      ALL      2622     09:29:53       9.50
+
+Unique Speakers By Language And Group
+Language   Group  Speakers
+----------------------------
+Spanish    HC           70
+Spanish    PD           70
+German     HC           88
+German     PD           88
+Czech      HC           50
+Czech      PD           51
+
+Unique Speakers By Task
+Language   Task           Group  Speakers   Files
+----------------------------------------------------
+Spanish    ddk            HC           70      70
+Spanish    ddk            PD           70      70
+Spanish    extended/ddk   HC           20      20
+Spanish    extended/ddk   PD           20      20
+Spanish    extended/read  HC           20      20
+Spanish    extended/read  PD           20      20
+Spanish    read           HC           70      70
+Spanish    read           PD           70      70
+Spanish    vowel          HC           51     447
+Spanish    vowel          PD           50     450
+German     ddk            HC           88      88
+German     ddk            PD           88     150
+German     read           HC           88      88
+German     read           PD           88      88
+German     vowel          HC           88     175
+German     vowel          PD           88     176
+Czech      ddk            HC           50     100
+Czech      ddk            PD           50     100
+Czech      read           HC           50     100
+Czech      read           PD           51     100
+Czech      vowel          HC           50     100
+Czech      vowel          PD           50     100
+
+
+
+mds_udprs_iii -> Spanish -> 38.9 --> ud -->31.9
+udprs_iii -> Czech -> 20.1 --> 
+mds_udprs_iii -> German -> 22.68.
+
+
+

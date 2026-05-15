@@ -1,0 +1,2 @@
+from .multitask_whisper import SharedWhisperMultiTaskModel
+

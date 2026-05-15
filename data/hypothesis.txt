@@ -1,0 +1,228 @@
+
+There is high prosody and frequency variation in healthy individual
+
+
+Speech Fatigue pattern analysis .. PD patient's speech deteriorates over time due to speech Fatigue
+
+Articulation is affected by PD so vocal tract is affected ..MFCC can understand this 
+
+In PD patients, F0 fluctuations are dampened these fluctuations are often dampened, a condition known as dysprosody.
+
+Maximum and minimum f0 during reading task // healthy controls have higher frequency variations
+
+When you shout "aaaaa," you are asking your brain to hold a constant muscle tension. In a healthy person, the Basal Ganglia (the part of the brain affected by PD) acts like a stabilizer. It smooths out the signals to the muscles.
+
+measure frequency variations in Vowel tasks
+
+The Vocal Tract (Shimmer/MFCCs): The muscles in your throat and tongue have "micro-tremors." They physically move slightly, changing the shape of your "filter." This makes the sound waves bounce around differently, contributing to Shimmer and changing your MFCCs.
+
+
+Noise has a very high frequency and is non-periodic, which forces the waveform to jitter up and down across the zero-line much more frequently.
+
+If you see a high ZCR during a task that is supposed to be a smooth vowel, it’s a red flag 
+
+In a healthy "pa-ta-ka," the energy should drop to zero and jump back up instantly. In PD, the energy "slumps." The rate of change (Delta) in Energy is a much stronger PD signal than the average Energy.
+
+Calculate the ratio of "Voiced" segments to "Unvoiced" segments.
+
+Wave2Vec2 is a black box but we need some clinical and explannable basis to 
+CPP (cepstral peak prominence)
+
+Phonation features
+jitter
+shimmer
+HNR (harmonics-to-noise ratio)
+CPP (cepstral peak prominence)
+Articulation features
+F1/F2 trajectories
+formant centralization ratio
+vowel space area
+Prosody features
+pitch variance
+pause duration
+speech rate
+Spectral features
+MFCCs
+spectral tilt
+spectral entropy
+
+OpenSMILE + XGBoost
+
+
+Current SOTA trend.
+
+Models:
+
+wav2vec 2.0
+HuBERT
+Whisper
+WavLM
+
+Pipeline:
+
+audio → pretrained SSL encoder → embedding pooling → classifier
+
+Classifier:
+
+MLP
+BiLSTM
+Transformer head
+
+Common pooling:
+
+mean pooling
+attentive pooling
+statistics pooling
+
+Used because:
+SSL representations are language-robust.
+
+Best baseline:
+
+Whisper encoder + classifier
+
+Recent dysarthric ASR adaptations increasingly use Whisper fine-tuning
+
+
+Very common.
+
+Method:
+
+Train on:
+Spanish + German + Czech together
+
+Test:
+held-out speakers
+
+Architecture:
+
+shared encoder
+shared classifier
+
+Loss:
+
+cross-entropy
+
+Goal:
+learn universal MSD characteristics
+
+Pattern:
+
+L_total = L_spanish + L_german + L_czech
+
+Advantages:
+simple
+strong baseline
+
+Must do this.
+
+
+Very promising for OneVoice-MSD.
+
+Recent multilingual dysarthria assessment uses universal phone recognition + language-specific mapping
+
+Pipeline:
+
+speech → universal phone recognizer → IPA-like units → phonological features
+
+Then:
+
+PER (phoneme error rate)
+
+PFER (phonological feature error rate)
+
+PhonCov
+
+Why powerful:
+language-independent articulation modeling
+
+This is underexplored and publishable.
+
+
+Deep learning
+CNN on spectrograms
+
+Input:
+mel-spectrogram
+
+Architecture:
+2D CNN
+
+Often used for severity classification.
+
+CNN + BiLSTM
+
+Captures:
+local + temporal
+
+Good baseline.
+
+Transformer encoder
+
+Best for multilingual transfer.
+
+Whisper fine-tuning
+
+Very strong for:
+ASR
+intelligibility
+severity
+
+
+
+Suppose:
+
+Spanish dysarthric speakers have slower speech.
+
+German dysarthric speakers have stronger consonants.
+
+Czech dysarthric speakers have different prosody.
+
+The model may learn:
+
+“oh, this pattern looks Spanish”
+
+instead of:
+
+“this pattern indicates dysarthria.”
+
+So performance looks good on seen languages.
+
+But bad on unseen ones.
+
+That’s overfitting to language.
+
+
+
+Ablation - 1
+
+Task specific model 
+(Does task specific help)
+
+Ablation - 2
+
+Combined Model (can combine help, does task diversity help)
+
+Ablation -3 
+
+    Shared Whisper
+    /      |      \
+DDK      Vowel    Read
+|         |        |
+Head      Head      Head
+
+Can a shared multilingual representation of MSD be learned across heterogeneous speech tasks and transferred across unseen languages?
+
+
+
+DDK head specializes in:
+
+timing, rhythm, repetition stability
+
+Vowel head specializes in:
+
+phonation stability, jitter-like cues
+
+Read head specializes in:
+
+prosody, intelligibility, articulation

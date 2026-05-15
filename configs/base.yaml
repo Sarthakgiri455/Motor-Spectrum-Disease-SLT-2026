@@ -1,0 +1,23 @@
+seed: 42
+device: auto
+data_root: data
+output_dir: checkpoints
+log_dir: runs
+
+model:
+  name: openai/whisper-small
+  freeze_encoder: true
+  unfreeze_last_n_layers: 0
+  dropout: 0.2
+
+training:
+  batch_size: 4
+  eval_batch_size: 4
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  epochs: 10
+  num_workers: 0
+  max_audio_seconds: 30.0
+  gradient_clip_norm: 1.0
+  validation_size: 0.2
+  logging_backend: tensorboard

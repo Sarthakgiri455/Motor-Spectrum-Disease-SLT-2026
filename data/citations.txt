@@ -1,0 +1,3 @@
+[1]The results indicate that it is possible to discriminate between PD patients and HC subjects with an accuracy of up to 88% using speech modeled with the Wav2vec 2.0 approach, while the accuracy with language was 77% when using the BETO and CNN model. This result validates the fact that PD is mainly a motor disorder, which, therefore, affects speech production mainly and language to a lesser extent.
+
+Deep Learning and Artificial Intelligence Applied to Model Speech and Language in Parkinson’s Disease.  The results obtained with speech modality outperformed the results of the multi-modal approach by up to 11%.
