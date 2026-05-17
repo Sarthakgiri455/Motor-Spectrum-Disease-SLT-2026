@@ -196,6 +196,12 @@ def write_json(path: Path, payload) -> None:
         json.dump(payload, handle, indent=2)
 
 
+def write_yaml(path: Path, payload) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as handle:
+        yaml.safe_dump(payload, handle, sort_keys=False)
+
+
 def write_prediction_csv(path: Path, rows: Sequence[Dict[str, object]]) -> None:
     if not rows:
         return
@@ -248,6 +254,38 @@ def save_records(path: Path, records) -> None:
         json.dump([record.__dict__ for record in records], handle, indent=2)
 
 
+def summarize_records(records) -> Dict[str, object]:
+    summary = {
+        "num_files": len(records),
+        "num_speakers": len({record.speaker_id for record in records}),
+        "languages": {},
+        "tasks": {},
+        "labels": {"HC": 0, "PD": 0},
+    }
+    for record in records:
+        summary["languages"][record.language] = summary["languages"].get(record.language, 0) + 1
+        summary["tasks"][record.task_type] = summary["tasks"].get(record.task_type, 0) + 1
+        label_name = "PD" if record.label == 1 else "HC"
+        summary["labels"][label_name] += 1
+    return summary
+
+
+def summarize_model_parameters(model: nn.Module) -> Dict[str, int]:
+    total = sum(parameter.numel() for parameter in model.parameters())
+    trainable = sum(parameter.numel() for parameter in model.parameters() if parameter.requires_grad)
+    encoder_total = sum(parameter.numel() for parameter in model.encoder.parameters())
+    encoder_trainable = sum(
+        parameter.numel() for parameter in model.encoder.parameters() if parameter.requires_grad
+    )
+    return {
+        "total_parameters": total,
+        "trainable_parameters": trainable,
+        "encoder_total_parameters": encoder_total,
+        "encoder_trainable_parameters": encoder_trainable,
+        "head_trainable_parameters": trainable - encoder_trainable,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="configs/base.yaml")
@@ -277,6 +315,21 @@ def main() -> None:
     save_records(output_dir / "train_records.json", train_records)
     save_records(output_dir / "val_records.json", val_records)
     save_records(output_dir / "test_records.json", test_records)
+    run_metadata = {
+        "run_name": run_name,
+        "config_path": args.config,
+        "train_languages": train_languages,
+        "test_languages": test_languages,
+        "seed": config["seed"],
+        "config": config,
+        "splits": {
+            "train": summarize_records(train_records),
+            "validation": summarize_records(val_records),
+            "test": summarize_records(test_records),
+        },
+    }
+    write_json(output_dir / "run_config.json", run_metadata)
+    write_yaml(output_dir / "run_config.yaml", run_metadata)
 
     train_loader = make_loader(train_records, config, split="train", shuffle=True)
     val_loader = make_loader(val_records, config, split="val", shuffle=False)
@@ -290,6 +343,8 @@ def main() -> None:
         unfreeze_last_n_layers=config["model"]["unfreeze_last_n_layers"],
         dropout=config["model"]["dropout"],
     ).to(device)
+    parameter_summary = summarize_model_parameters(model)
+    write_json(output_dir / "model_summary.json", parameter_summary)
 
     optimizer = torch.optim.AdamW(
         (p for p in model.parameters() if p.requires_grad),
